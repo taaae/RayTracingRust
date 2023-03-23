@@ -1,0 +1,10 @@
+[package]
+name = "ray-tracing-rust"
+version = "0.1.0"
+edition = "2021"
+authors = ["Rusanov Timofei <https://github.com/taaae>"]
+repository = "https://github.com/taaae/RayTracingRust/"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
