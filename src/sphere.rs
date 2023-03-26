@@ -43,7 +43,7 @@ impl Hittable for Sphere {
         }
         // outward normal here
         let mut normal = (r.at(root) - self.center()) / self.radius();
-        if face_one_direction(&r, &normal) {
+        if face_one_direction(r, &normal) {
             normal = -normal;
         }
         Some(HitRecord {

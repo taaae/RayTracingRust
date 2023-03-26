@@ -10,7 +10,7 @@ pub mod sphere;
 pub mod vec3;
 
 fn ray_color<T: Hittable>(r: &Ray, world: &T) -> Color {
-    match world.hit(&r, 0.0, f64::MAX) {
+    match world.hit(r, 0.0, f64::MAX) {
         Some(record) => 0.5 * (record.normal + Color::new(1.0, 1.0, 1.0)),
         None => {
             let unit_direction = unit_vector(r.direction());

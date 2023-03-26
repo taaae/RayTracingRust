@@ -53,8 +53,10 @@ impl<T: Hittable> Default for HittableList<T> {
 // TODO: refactor this spaghetti
 impl<T: Hittable> Hittable for HittableList<T> {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
-        let mut temp_record = HitRecord::default();
-        temp_record.t = t_max;
+        let mut temp_record = HitRecord {
+            t: t_max,
+            ..Default::default()
+        };
         let mut hit_something = false;
         self.objects
             .iter()
