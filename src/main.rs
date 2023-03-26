@@ -1,4 +1,5 @@
 use crate::ray::*;
+use crate::ray_trace::Hittable;
 use crate::sphere::*;
 use crate::vec3::*;
 
@@ -9,11 +10,8 @@ pub mod vec3;
 
 fn ray_color(r: &Ray) -> Color {
     let s = Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5);
-    match hit_sphere(&s, r) {
-        Some(t) => {
-            let normal = unit_vector(r.at(t) - s.center());
-            0.5 * (normal + Color::new(1.0, 1.0, 1.0))
-        }
+    match s.hit(&r, 0.0, f64::MAX) {
+        Some(record) => 0.5 * (record.normal + Color::new(1.0, 1.0, 1.0)),
         None => {
             let unit_direction = unit_vector(r.direction());
             let t = 0.5 * (unit_direction.y() + 1.0);
