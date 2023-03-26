@@ -1,6 +1,8 @@
-use std::ops::{Mul, MulAssign, Div, DivAssign};
-use derive_more::{Add, Neg, Sub, AddAssign, SubAssign};
+use derive_more::{Add, AddAssign, Neg, Sub, SubAssign};
+use std::ops::{Div, DivAssign, Mul, MulAssign};
+use std::io::Write;
 
+// Note: intentionally used Self and not &Self in operations (cuz i'm too lazy)
 #[derive(Add, Sub, Neg, AddAssign, SubAssign, Clone, Copy, Debug, PartialEq)]
 pub struct Vec3 {
     x: f64,
@@ -10,11 +12,7 @@ pub struct Vec3 {
 
 impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
-        Self {
-            x,
-            y,
-            z,
-        }
+        Self { x, y, z }
     }
 
     pub fn x(&self) -> f64 {
@@ -78,10 +76,8 @@ impl DivAssign<f64> for Vec3 {
     }
 }
 
-fn dot(u: Vec3, v: Vec3) -> f64 {
-      u.x() * v.x()
-    + u.y() * v.y()
-    + u.z() * v.z()
+pub fn dot(u: Vec3, v: Vec3) -> f64 {
+    u.x() * v.x() + u.y() * v.y() + u.z() * v.z()
 }
 
 fn cross(u: Vec3, v: Vec3) -> Vec3 {
@@ -92,7 +88,7 @@ fn cross(u: Vec3, v: Vec3) -> Vec3 {
     }
 }
 
-fn unit_vector(u: Vec3) -> Vec3 {
+pub fn unit_vector(u: Vec3) -> Vec3 {
     u / u.length()
 }
 
@@ -101,13 +97,14 @@ fn unit_vector(u: Vec3) -> Vec3 {
 pub type Point3 = Vec3;
 pub type Color = Vec3;
 
+// Note: idk how streams work in rust so just implemented simple print
 
-// Note: idk what to do with streams so just implemented simple print
-
-pub fn write_color(c: Color) {
-    println!("{} {} {}", (255.999 * c.x()).round(), (255.999 * c.y()).round(), (255.99 * c.z()).round());
+pub fn write_color(stdout: &mut std::io::Stdout, pixel_color: Color) {
+    let r = (255.999 * pixel_color.x()) as i32;
+    let g = (255.999 * pixel_color.y()) as i32;
+    let b = (255.999 * pixel_color.z()) as i32;
+    write!(stdout, "{} {} {}\n", r, g, b).unwrap();
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -145,7 +142,14 @@ mod tests {
         let v = Point3::new(-1.0, 3.0, 6.0);
         assert_eq!(cross(u, v), Point3::new(3.0, -9.0, 5.0));
         assert_eq!(dot(u, v), 23.0);
-        assert_eq!(unit_vector(u), Vec3::new(1.0/(14.0_f64.sqrt()), (2.0_f64 / 7.0).sqrt(), 3.0 / 14_f64.sqrt()));
+        assert_eq!(
+            unit_vector(u),
+            Vec3::new(
+                1.0 / (14.0_f64.sqrt()),
+                (2.0_f64 / 7.0).sqrt(),
+                3.0 / 14_f64.sqrt()
+            )
+        );
         assert_eq!(u.length(), 14.0_f64.sqrt());
     }
 }
