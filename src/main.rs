@@ -1,7 +1,8 @@
 use crate::ray::*;
-use crate::ray_trace::Hittable;
+use crate::ray_trace::*;
 use crate::sphere::*;
 use crate::vec3::*;
+use std::rc::Rc;
 
 pub mod ray;
 pub mod ray_trace;
@@ -9,7 +10,8 @@ pub mod sphere;
 pub mod vec3;
 
 fn ray_color(r: &Ray) -> Color {
-    let s = Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5);
+    let mut s = HittableList::new(Rc::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)));
+    s.add(Rc::new(Sphere::new(Vec3::new(0.0, 0.1, -0.5), 0.1)));
     match s.hit(&r, 0.0, f64::MAX) {
         Some(record) => 0.5 * (record.normal + Color::new(1.0, 1.0, 1.0)),
         None => {
