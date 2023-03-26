@@ -56,8 +56,7 @@ impl<T: Hittable> Hittable for HittableList<T> {
         let mut temp_record = HitRecord::default();
         temp_record.t = t_max;
         let mut hit_something = false;
-        self
-            .objects
+        self.objects
             .iter()
             // might replace t_max with temp_record.t here to remove if condition later,
             // but borrow checker doesn't let me
@@ -66,7 +65,7 @@ impl<T: Hittable> Hittable for HittableList<T> {
                 if let Some(record) = record_opt {
                     if record.t <= temp_record.t {
                         temp_record = record;
-                        hit_something =  true;
+                        hit_something = true;
                     }
                 }
             });

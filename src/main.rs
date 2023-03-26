@@ -9,10 +9,8 @@ pub mod ray_trace;
 pub mod sphere;
 pub mod vec3;
 
-fn ray_color(r: &Ray) -> Color {
-    let mut s = HittableList::new(Rc::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)));
-    s.add(Rc::new(Sphere::new(Vec3::new(0.0, 0.1, -0.5), 0.1)));
-    match s.hit(&r, 0.0, f64::MAX) {
+fn ray_color<T: Hittable>(r: &Ray, world: &T) -> Color {
+    match world.hit(&r, 0.0, f64::MAX) {
         Some(record) => 0.5 * (record.normal + Color::new(1.0, 1.0, 1.0)),
         None => {
             let unit_direction = unit_vector(r.direction());
@@ -39,6 +37,10 @@ fn main() {
     let lower_left_corner =
         origin - horizontal / 2.0 - vertical / 2.0 - Vec3::new(0.0, 0.0, focal_length);
 
+    // World
+    let mut world = HittableList::new(Rc::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
+    world.add(Rc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
+
     println!("P3\n{} {}\n255", image_width_pixels, image_height_pixels);
     for i in (0..image_height_pixels).rev() {
         eprintln!("Lines left: {}", i);
@@ -49,7 +51,7 @@ fn main() {
                 origin,
                 lower_left_corner + u * horizontal + v * vertical - origin,
             );
-            write_color(&mut std::io::stdout(), ray_color(&r));
+            write_color(&mut std::io::stdout(), ray_color(&r, &world));
         }
     }
     eprintln!("Done!");
