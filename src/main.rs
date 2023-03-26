@@ -10,12 +10,17 @@ pub mod vec3;
 
 fn ray_color(r: &Ray) -> Color {
     let s = Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5);
-    if hit_sphere(&s, &r) {
-        return Color::new(1.0, 0.0, 0.0);
+    match hit_sphere(&s, r) {
+        Some(t) => {
+            let normal = unit_vector(r.at(t) - s.center());
+            0.5 * (normal + Color::new(1.0, 1.0, 1.0))
+        }
+        None => {
+            let unit_direction = unit_vector(r.direction());
+            let t = 0.5 * (unit_direction.y() + 1.0);
+            (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
+        }
     }
-    let unit_direction = unit_vector(r.direction());
-    let t = 0.5 * (unit_direction.y() + 1.0);
-    (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
 }
 
 fn main() {
