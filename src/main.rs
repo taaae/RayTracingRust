@@ -1,5 +1,4 @@
 use crate::ray::*;
-use crate::ray_trace::*;
 use crate::sphere::*;
 use crate::vec3::*;
 
