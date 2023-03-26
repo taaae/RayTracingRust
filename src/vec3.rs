@@ -3,7 +3,7 @@ use std::io::Write;
 use std::ops::{Div, DivAssign, Mul, MulAssign};
 
 // Note: intentionally used Self and not &Self in operations (cuz i'm too lazy)
-#[derive(Add, Sub, Neg, AddAssign, SubAssign, Clone, Copy, Debug, PartialEq)]
+#[derive(Add, Sub, Neg, AddAssign, SubAssign, Clone, Copy, Debug, PartialEq, Default)]
 pub struct Vec3 {
     x: f64,
     y: f64,
