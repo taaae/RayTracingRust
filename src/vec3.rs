@@ -106,6 +106,13 @@ pub fn write_color(stdout: &mut std::io::Stdout, pixel_color: Color) {
     writeln!(stdout, "{} {} {}", r, g, b).unwrap();
 }
 
+pub fn generate_color(pixel_color: Color) -> String {
+    let r = (255.999 * pixel_color.x()) as i32;
+    let g = (255.999 * pixel_color.y()) as i32;
+    let b = (255.999 * pixel_color.z()) as i32;
+    format!("{} {} {}\n", r, g, b)
+}
+
 //////////////////////////////////////////////////////////////////////////////////////
 
 #[cfg(test)]

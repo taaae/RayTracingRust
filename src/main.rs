@@ -1,3 +1,5 @@
+#![warn(rust_2018_idioms)]
+
 use crate::ray::*;
 use crate::ray_trace::*;
 use crate::sphere::*;
@@ -21,9 +23,10 @@ fn ray_color<T: Hittable>(r: &Ray, world: &T) -> Color {
 }
 
 fn main() {
+    let mut to_write = String::new();
     // Image
     let aspect_ratio = 16.0 / 9.0;
-    let image_width_pixels = 400;
+    let image_width_pixels = 10000;
     let image_height_pixels = (f64::from(image_width_pixels) / aspect_ratio).round() as i32;
 
     // Camera
@@ -51,8 +54,10 @@ fn main() {
                 origin,
                 lower_left_corner + u * horizontal + v * vertical - origin,
             );
-            write_color(&mut std::io::stdout(), ray_color(&r, &world));
+            to_write.push_str(&generate_color(ray_color(&r, &world)));
+            //write_color(&mut std::io::stdout(), ray_color(&r, &world));
         }
     }
+    println!("{}", to_write);
     eprintln!("Done!");
 }
