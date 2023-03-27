@@ -1,7 +1,7 @@
 use derive_more::{Add, AddAssign, Neg, Sub, SubAssign};
 // use std::io::Write;
-use std::ops::{Div, DivAssign, Mul, MulAssign};
 use num::clamp;
+use std::ops::{Div, DivAssign, Mul, MulAssign};
 
 // Note: intentionally used Self and not &Self in operations (cuz i'm too lazy)
 #[derive(Add, Sub, Neg, AddAssign, SubAssign, Clone, Copy, Debug, PartialEq, Default)]
@@ -28,11 +28,11 @@ impl Vec3 {
         self.z
     }
 
-    fn length_squared(&self) -> f64 {
+    pub fn length_squared(&self) -> f64 {
         self.x().powi(2) + self.y().powi(2) + self.z().powi(2)
     }
 
-    fn length(&self) -> f64 {
+    pub fn length(&self) -> f64 {
         self.length_squared().sqrt()
     }
 }
@@ -113,14 +113,13 @@ pub fn generate_color(pixel_color: Color, samples_per_pixel: u32) -> String {
     let mut b = pixel_color.z();
 
     let scale = 1.0 / samples_per_pixel as f64;
-    r *= scale;
-    g *= scale;
-    b *= scale;
+    r = (scale * r).sqrt();
+    g = (scale * g).sqrt();
+    b = (scale * b).sqrt();
 
     let final_r = (256.0 * clamp(r, 0.0, 0.999)) as i32;
     let final_g = (256.0 * clamp(g, 0.0, 0.999)) as i32;
     let final_b = (256.0 * clamp(b, 0.0, 0.999)) as i32;
-
 
     format!("{} {} {}\n", final_r, final_g, final_b)
 }
