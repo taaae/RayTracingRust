@@ -1,3 +1,3 @@
 cargo run > "filename.ppm"
 
-writes gradient to your file
+writes rendered image to your file
