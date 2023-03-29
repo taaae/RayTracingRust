@@ -1,7 +1,9 @@
+use crate::number_stuff::degrees_to_radians;
 use crate::ray::*;
 use crate::vec3::*;
 
 pub struct Camera {
+    vertical_fov_degrees: f64,
     aspect_ratio: f64,
     viewpoint_height: f64,
     viewpoint_width: f64,
@@ -15,13 +17,17 @@ pub struct Camera {
 
 impl Camera {
     pub fn new(
+        vertical_fov_degrees: f64,
         aspect_ratio: f64,
-        viewpoint_height: f64,
         focal_length: f64,
         origin: Point3,
         samples_per_pixel: u32,
     ) -> Self {
+        let theta = degrees_to_radians(vertical_fov_degrees);
+        let h = (theta/2.0).tan();
+        let viewpoint_height = 2.0 * h;
         Self {
+            vertical_fov_degrees,
             aspect_ratio,
             viewpoint_height,
             viewpoint_width: viewpoint_height * aspect_ratio,
