@@ -35,6 +35,11 @@ impl Vec3 {
     pub fn length(&self) -> f64 {
         self.length_squared().sqrt()
     }
+
+    pub fn really_small(&self) -> bool {
+        let small = 0.00001;
+        self.x.abs() < small && self.y.abs() < small && self.z.abs() < small
+    }
 }
 
 impl Mul<f64> for Vec3 {
@@ -93,6 +98,10 @@ pub fn unit_vector(u: Vec3) -> Vec3 {
     u / u.length()
 }
 
+pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
+    *v - 2.0 * (dot(*v, *n) * *n)
+}
+
 // Note: considered to ignore [] and * (for two vectors) operators
 
 pub type Point3 = Vec3;
@@ -122,6 +131,18 @@ pub fn generate_color(pixel_color: Color, samples_per_pixel: u32) -> String {
     let final_b = (256.0 * clamp(b, 0.0, 0.999)) as i32;
 
     format!("{} {} {}\n", final_r, final_g, final_b)
+}
+
+impl Mul for Color {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x * rhs.x,
+            y: self.y * rhs.y,
+            z: self.z * rhs.z,
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

@@ -23,6 +23,7 @@ pub fn random_vec() -> Vec3 {
     Vec3::new(rng.gen::<f64>(), rng.gen::<f64>(), rng.gen::<f64>())
 }
 
+/// generates random vec in cube with (min, min, min), (max, max, max) as extreme points
 pub fn random_vec_in_range(min: f64, max: f64) -> Vec3 {
     let mut rng = rand::thread_rng();
     Vec3::new(
@@ -32,7 +33,8 @@ pub fn random_vec_in_range(min: f64, max: f64) -> Vec3 {
     )
 }
 
-pub fn random_in_unit_sphere() -> Point3 {
+/// generates random vector inside unit sphere
+pub fn random_in_unit_sphere() -> Vec3 {
     loop {
         let v = random_vec_in_range(-1.0, 1.0);
         if v.length_squared() >= 1.0 {
@@ -42,6 +44,7 @@ pub fn random_in_unit_sphere() -> Point3 {
     }
 }
 
+/// generates random vector on the unit sphere
 pub fn random_unit_vector() -> Vec3 {
     unit_vector(random_in_unit_sphere())
 }

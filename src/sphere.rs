@@ -1,15 +1,18 @@
+use crate::material::Material;
 use crate::ray::*;
 use crate::ray_trace::*;
 use crate::vec3::*;
+use std::rc::Rc;
 
-pub struct Sphere {
+pub struct Sphere<M: Material + 'static> {
     center: Point3,
     radius: f64,
+    material: Rc<M>,
 }
 
-impl Sphere {
-    pub fn new(center: Point3, radius: f64) -> Self {
-        Self { center, radius }
+impl<M: Material + 'static> Sphere<M> {
+    pub fn new(center: Point3, radius: f64, material: Rc<M>) -> Self {
+        Self { center, radius, material }
     }
 
     pub fn center(&self) -> Point3 {
@@ -20,7 +23,7 @@ impl Sphere {
     }
 }
 
-impl Hittable for Sphere {
+impl<M: Material + 'static> Hittable for Sphere<M> {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         assert!(t_max >= t_min);
         let oc = r.origin() - self.center();
@@ -50,6 +53,7 @@ impl Hittable for Sphere {
             point: r.at(root),
             normal,
             t: root,
+            material_reference: Some(self.material.clone()),
         })
     }
 }

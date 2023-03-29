@@ -1,3 +1,4 @@
+use crate::material::Material;
 use crate::ray::*;
 use crate::vec3::*;
 use std::rc::Rc;
@@ -7,6 +8,7 @@ pub struct HitRecord {
     pub point: Point3,
     pub normal: Vec3,
     pub t: f64,
+    pub material_reference: Option<Rc<dyn Material>>,
 }
 
 pub trait Hittable {
@@ -23,35 +25,28 @@ pub fn face_one_direction(r: &Ray, v: &Vec3) -> bool {
     dot(r.direction(), *v) > 0.0
 }
 
-pub struct HittableList<T: Hittable> {
+#[derive(Default)]
+pub struct HittableList {
     // might need to change to Vec<Rc<Cell<T>>>
-    objects: Vec<Rc<T>>,
+    objects: Vec<Rc<dyn Hittable>>,
 }
 
-impl<T: Hittable> HittableList<T> {
-    pub fn add(&mut self, object: Rc<T>) {
+impl HittableList {
+    pub fn add(&mut self, object: Rc<dyn Hittable>) {
         self.objects.push(object);
     }
     pub fn clear(&mut self) {
         self.objects.clear();
     }
-    pub fn new(object: Rc<T>) -> Self {
+    pub fn new(object: Rc<dyn Hittable>) -> Self {
         Self {
             objects: vec![object],
         }
     }
 }
 
-impl<T: Hittable> Default for HittableList<T> {
-    fn default() -> Self {
-        Self {
-            objects: Vec::new(),
-        }
-    }
-}
-
 // TODO: refactor this spaghetti
-impl<T: Hittable> Hittable for HittableList<T> {
+impl Hittable for HittableList {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let mut temp_record = HitRecord {
             t: t_max,
