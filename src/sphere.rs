@@ -12,7 +12,11 @@ pub struct Sphere<M: Material + 'static> {
 
 impl<M: Material + 'static> Sphere<M> {
     pub fn new(center: Point3, radius: f64, material: Rc<M>) -> Self {
-        Self { center, radius, material }
+        Self {
+            center,
+            radius,
+            material,
+        }
     }
 
     pub fn center(&self) -> Point3 {
@@ -46,14 +50,17 @@ impl<M: Material + 'static> Hittable for Sphere<M> {
         }
         // outward normal here
         let mut normal = (r.at(root) - self.center()) / self.radius();
+        let mut outside_ray = true;
         if face_one_direction(r, &normal) {
             normal = -normal;
+            outside_ray = false;
         }
         Some(HitRecord {
             point: r.at(root),
             normal,
             t: root,
             material_reference: Some(self.material.clone()),
+            outside_ray,
         })
     }
 }

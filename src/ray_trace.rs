@@ -9,6 +9,7 @@ pub struct HitRecord {
     pub normal: Vec3,
     pub t: f64,
     pub material_reference: Option<Rc<dyn Material>>,
+    pub outside_ray: bool,
 }
 
 pub trait Hittable {
