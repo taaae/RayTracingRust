@@ -8,11 +8,12 @@ pub struct Camera {
     viewpoint_height: f64,
     viewpoint_width: f64,
     focal_length: f64,
-    origin: Point3,
+    look_from: Point3,
     horizontal: Vec3,
     vertical: Vec3,
     lower_left_corner: Point3,
     samples_per_pixel: u32,
+    look_at: Point3,
 }
 
 impl Camera {
@@ -20,35 +21,42 @@ impl Camera {
         vertical_fov_degrees: f64,
         aspect_ratio: f64,
         focal_length: f64,
-        origin: Point3,
+        look_from: Point3,
         samples_per_pixel: u32,
+        look_at: Point3,
+        vec_up: Vec3,
     ) -> Self {
         let theta = degrees_to_radians(vertical_fov_degrees);
-        let h = (theta/2.0).tan();
+        let h = (theta / 2.0).tan();
         let viewpoint_height = 2.0 * h;
+        let viewpoint_width = viewpoint_height * aspect_ratio;
+        let w = unit_vector(look_from - look_at);
+        let u = unit_vector(cross(vec_up, w));
+        let v = cross(w, u);
+        let horizontal = viewpoint_width * u;
+        let vertical = viewpoint_height * v;
+
         Self {
             vertical_fov_degrees,
             aspect_ratio,
             viewpoint_height,
-            viewpoint_width: viewpoint_height * aspect_ratio,
+            viewpoint_width,
             focal_length,
-            origin,
-            horizontal: Vec3::new(viewpoint_height * aspect_ratio, 0.0, 0.0),
-            vertical: Vec3::new(0.0, viewpoint_height, 0.0),
-            lower_left_corner: origin
-                - Vec3::new(viewpoint_height * aspect_ratio, 0.0, 0.0) / 2.0
-                - Vec3::new(0.0, viewpoint_height, 0.0) / 2.0
-                - Vec3::new(0.0, 0.0, focal_length),
+            look_from,
             samples_per_pixel,
+            horizontal,
+            vertical,
+            lower_left_corner: look_from - horizontal / 2.0 - vertical / 2.0 - w,
+            look_at,
         }
     }
 
     /// returns a ray that goes from camera origin to (u , v) point. When (u, v) = (0.0, 0.0) end of the ray
     /// will be lower_left_corner. When (u, v) = (1.0, 1.0), end of the ray will be higher  up corner.
-    pub fn get_ray(&self, u: f64, v: f64) -> Ray {
+    pub fn get_ray(&self, s: f64, x: f64) -> Ray {
         Ray::new(
-            self.origin,
-            self.lower_left_corner + u * self.horizontal + v * self.vertical - self.origin,
+            self.look_from,
+            self.lower_left_corner + s * self.horizontal + x * self.vertical - self.look_from,
         )
     }
 

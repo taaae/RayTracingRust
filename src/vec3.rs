@@ -86,13 +86,13 @@ pub fn dot(u: Vec3, v: Vec3) -> f64 {
     u.x() * v.x() + u.y() * v.y() + u.z() * v.z()
 }
 
-// fn cross(u: Vec3, v: Vec3) -> Vec3 {
-//     Vec3 {
-//         x: u.y() * v.z() - u.z() * v.y(),
-//         y: u.z() * v.x() - u.x() * v.z(),
-//         z: u.x() * v.y() - u.y() * v.x(),
-//     }
-// }
+pub fn cross(u: Vec3, v: Vec3) -> Vec3 {
+    Vec3 {
+        x: u.y() * v.z() - u.z() * v.y(),
+        y: u.z() * v.x() - u.x() * v.z(),
+        z: u.x() * v.y() - u.y() * v.x(),
+    }
+}
 
 pub fn unit_vector(u: Vec3) -> Vec3 {
     u / u.length()
