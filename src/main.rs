@@ -7,16 +7,15 @@ samples_per_pixel (in cam)
 max_depth
 */
 
-use crate::material::{Dielectric, Lambertian, Metal};
 use crate::ray::*;
 use crate::ray_trace::*;
-use crate::sphere::*;
 use crate::vec3::*;
 use camera::*;
+use generate_scene::generate_scene;
 use number_stuff::*;
-use std::rc::Rc;
 
 pub mod camera;
+pub mod generate_scene;
 pub mod material;
 pub mod number_stuff;
 pub mod ray;
@@ -50,56 +49,27 @@ fn ray_color<T: Hittable>(ray: &mut Ray, world: &T, depth: u16) -> Color {
 fn main() {
     let mut to_write = String::new();
 
-    let samples_per_pixel = 15;
-    let max_depth = 15;
-    let image_width_pixels = 400;
+    let samples_per_pixel = 500;
+    let max_depth = 50;
+    let image_width_pixels = 1200;
 
     // Image
     let cam = Camera::new(
         30.0,
-        16.0 / 9.0,
+        3.0 / 2.0,
         1.0,
-        Point3::new(3.0, 3.0, 2.0),
+        Point3::new(13.0, 2.0, 3.0),
         samples_per_pixel,
-        Point3::new(0.0, 0.0, -1.0),
+        Point3::new(0.0, 0.0, 0.0),
         Vec3::new(0.0, 1.0, 0.0),
-        2.0,
-        (Point3::new(3.0, 3.0, 2.0) - Point3::new(0.0, 0.0, -1.0)).length(),
+        0.1,
+        10.0,
     );
 
     let image_height_pixels = (f64::from(image_width_pixels) / cam.aspect_ratio()).round() as i32;
 
     // World
-    let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    let material_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
-    let material_left = Rc::new(Dielectric::new(1.5));
-    let material_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
-    let mut world = HittableList::default();
-    world.add(Rc::new(Sphere::new(
-        Point3::new(0.0, -100.5, -1.0),
-        100.0,
-        material_ground,
-    )));
-    world.add(Rc::new(Sphere::new(
-        Point3::new(0.0, 0.0, -1.0),
-        0.5,
-        material_center,
-    )));
-    world.add(Rc::new(Sphere::new(
-        Point3::new(-1.0, 0.0, -1.0),
-        0.5,
-        material_left.clone(),
-    )));
-    world.add(Rc::new(Sphere::new(
-        Point3::new(-1.0, 0.0, -1.0),
-        -0.45,
-        material_left,
-    )));
-    world.add(Rc::new(Sphere::new(
-        Point3::new(1.0, 0.0, -1.0),
-        0.5,
-        material_right,
-    )));
+    let world = generate_scene();
 
     to_write.push_str(&format!(
         "P3\n{} {}\n255\n",
