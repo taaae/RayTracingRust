@@ -48,3 +48,14 @@ pub fn random_in_unit_sphere() -> Vec3 {
 pub fn random_unit_vector() -> Vec3 {
     unit_vector(random_in_unit_sphere())
 }
+
+pub fn random_in_unit_disk() -> Vec3 {
+    let mut rng = rand::thread_rng();
+    let x = rng.gen_range(-1.0..1.0);
+    let y = rng.gen_range(-1.0..1.0);
+    if x * x + y * y > 1.0 {
+        // no cycle because I can just pass rng reference down later
+        return random_in_unit_disk();
+    }
+    Vec3::new(x, y, 0.0)
+}

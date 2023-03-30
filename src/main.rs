@@ -50,19 +50,21 @@ fn ray_color<T: Hittable>(ray: &mut Ray, world: &T, depth: u16) -> Color {
 fn main() {
     let mut to_write = String::new();
 
-    let samples_per_pixel = 35;
-    let max_depth = 20;
-    let image_width_pixels = 800;
+    let samples_per_pixel = 15;
+    let max_depth = 15;
+    let image_width_pixels = 400;
 
     // Image
     let cam = Camera::new(
         30.0,
         16.0 / 9.0,
         1.0,
-        Point3::new(-2.0, 2.0, 1.0),
+        Point3::new(3.0, 3.0, 2.0),
         samples_per_pixel,
         Point3::new(0.0, 0.0, -1.0),
         Vec3::new(0.0, 1.0, 0.0),
+        2.0,
+        (Point3::new(3.0, 3.0, 2.0) - Point3::new(0.0, 0.0, -1.0)).length(),
     );
 
     let image_height_pixels = (f64::from(image_width_pixels) / cam.aspect_ratio()).round() as i32;
