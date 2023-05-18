@@ -1,6 +1,6 @@
 [package]
 name = "ray-tracing-rust"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Rusanov Timofei <https://github.com/taaae>"]
 repository = "https://github.com/taaae/RayTracingRust/"
@@ -8,6 +8,3 @@ repository = "https://github.com/taaae/RayTracingRust/"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-derive_more = "0.99.17"
-rand = "0.8.5"
-num = "0.4.0"
